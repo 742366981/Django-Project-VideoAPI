@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+    <form method="post" action="">
+        {% csrf_token %}
+        <p>用户名：<input name="username"></p>
+        <p>密码：<input type="password" name="password"></p>
+        <input type="submit">
+    </form>
+    <script src="/static/js/jquery.min.js"></script>
+    <script>
+        $('form').on('submit',function () {
+            var csrf=$('input[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                type:'POST',
+                url:'/video/api-token-auth/',
+                data:{'username':$('input[name=username]').val(),'password':$('input[name=password]').val()},
+                dataType:'json',
+                headers:{'X-CSRFToken':csrf},
+                success:function (data) {
+                    if(data){
+                        localStorage.token=data.token;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

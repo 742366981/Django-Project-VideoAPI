@@ -1,0 +1,4 @@
+django==1.11
+pymysql
+djangorestframework==3.4.6
+django-filter==1.0.0
