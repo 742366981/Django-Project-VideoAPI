@@ -28,7 +28,7 @@ class AnimationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Animation
         fields = ['animation_img', 'animation_name', 'director', 'staring', 'animation_type', 'area', 'languages',
-                  'release_time', 'update_time', 'summary', 'play_url']
+                  'release_time', 'update_time', 'summary']
 
 
 class FuliSerializer(serializers.ModelSerializer):

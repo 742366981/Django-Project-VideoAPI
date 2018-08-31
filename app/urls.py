@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'login/', views.login, name='login'),
     url(r'^api-token-auth/', obtain_auth_token),
     url(r'^tvList/', views.TvListView.as_view()),
+    url(r'^showList/', views.ShowListView.as_view()),
+    url(r'^animationList/', views.AnimationListView.as_view()),
 ]
 urlpatterns += movie_router.urls + tv_router.urls + shows_router.urls + animation_router.urls + fuli_router.urls

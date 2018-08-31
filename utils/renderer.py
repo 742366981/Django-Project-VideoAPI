@@ -5,10 +5,10 @@ class MyJsonRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
         if isinstance(data, dict):
             msg = data.pop('msg', '请求成功')
-            code = data.pop('code', 0)
+            code = data.pop('code', 200)
         else:
             msg = '请求成功'
-            code = 0
+            code = 200
         res = {
             'data': data,
             'msg': msg,

@@ -110,7 +110,7 @@ class TvList(models.Model):
 
 # 综艺期数
 class ShowList(models.Model):
-    show_name = models.ForeignKey(Shows, db_column='tv_name')
+    show_name = models.ForeignKey(Shows, db_column='show_name')
     num = models.CharField(max_length=30)
     play_url = models.CharField(max_length=255)
 
@@ -120,7 +120,7 @@ class ShowList(models.Model):
 
 # 动漫集数
 class AnimationList(models.Model):
-    animation_name = models.ForeignKey(Animation, db_column='tv_name')
+    animation_name = models.ForeignKey(Animation, db_column='animation_name')
     num = models.CharField(max_length=30)
     play_url = models.CharField(max_length=255)
 

@@ -124,12 +124,12 @@ REST_FRAMEWORK = {
     # 分页
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 10,
+    # 'PAGE_SIZE': 30,
     # 过滤
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.DjangoFilterBackend',
     ),
-    # 自定义接口
+    # 自定义接口返回结构
     'DEFAULT_RENDERER_CLASSES': (
         'utils.renderer.MyJsonRenderer',
     ),
