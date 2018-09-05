@@ -1,18 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>登录</title>
-</head>
-<body>
-    <form method="post" action="">
-        {% csrf_token %}
-        <p>用户名：<input name="username"></p>
-        <p>密码：<input type="password" name="password"></p>
-        <input type="submit">
-    </form>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+		<title>登录</title>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<script src="/static/js/jquery.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+					<h3>
+						登录
+					</h3>
+				</div>
+			</div>
+			<div class="row clearfix">
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+					<form role="form" method="post" action="">
+                        {% csrf_token %}
+						<div class="form-group">
+							 <label for="exampleInputUser">用户名</label>
+                            <input type="type" name="username" class="form-control" id="exampleInputUser"
+							placeholder="请输入你的用户名或邮箱"/>
+						</div>
+						<div class="form-group">
+							 <label for="exampleInputPassword">密码</label>
+                            <input type="password" name="password" class="form-control" id="exampleInputPassword"
+							placeholder="请输入密码"/>
+						</div>
+						<div class="form-group">
+							<p class="help-block" style="color: red;">
+								{{hint}}
+							</p>
+						</div>
+						<div class="checkbox">
+							 <label><input type="checkbox" class="remember" />记住我</label>
+						</div> <button type="submit" class="btn btn-default">登录</button>
+						<a href="{% url 'video:register' %}">没有账号?点击注册</a>
+					</form>
+				</div>
+			</div>
+		</div>
     <script src="/static/js/jquery.min.js"></script>
     <script>
+		$('input[name=username]').val(localStorage.uid);
         $('form').on('submit',function () {
             var csrf=$('input[name=csrfmiddlewaretoken]').val();
             $.ajax({
@@ -25,6 +67,11 @@
                     if(data){
                         localStorage.token=data.token;
                     }
+                    if($('.remember').prop('checked')){
+                        localStorage.uid=$('input[name=username]').val();
+					}else{
+                        localStorage.removeItem('uid');
+					}
                 }
             });
         });

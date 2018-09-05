@@ -3,43 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <style>
+        table,td,th
+        {
+            border:1px solid black;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+    </style>
 </head>
 <body>
-    <div id="content">
+    {% if user.id %}
+    <p>你的token是:{{token}}</p>
+    <a href="{% url 'video:logout' %}">注销</a>
+    {% else %}
+    <p>你还没有登录，请先登录后查看自己的token</p>
+    <a href="{% url 'video:login' %}">点击登录</a>
+    {% endif %}
+    <br>
+    <br>
+    <div>
+        <table>
+            <tr>
+                <th>接口名称</th>
+                <th>接口地址</th>
+            </tr>
+            <tr>
+                <td>电影</td>
+                <td>http://api.stygmc.com/video/movies/?page=1&size=10&rand=1</td>
+            </tr>
+            <tr>
+                <td>电视剧</td>
+                <td>http://api.stygmc.com/video/tv/?page=1&size=10&rand=1</td>
+            </tr>
+            <tr>
+                <td>电视剧集数</td>
+                <td>http://api.stygmc.com/video/tvList/?name=女兵日记</td>
+            </tr>
+            <tr>
+                <td>综艺</td>
+                <td>http://api.stygmc.com/video/shows/?page=1&size=10&rand=1</td>
+            </tr>
+            <tr>
+                <td>综艺期数</td>
+                <td>http://api.stygmc.com/video/showList/?name=天天向上</td>
+            </tr>
+            <tr>
+                <td>动漫</td>
+                <td>http://api.stygmc.com/video/animation/?page=1&size=10&rand=1</td>
+            </tr>
+            <tr>
+                <td>动漫集数</td>
+                <td>http://api.stygmc.com/video/animationList/?name=枪神纪</td>
+            </tr>
+            <tr>
+                <td>福利</td>
+                <td>http://api.stygmc.com/video/fuli/?page=1&size=10&rand=1</td>
+            </tr>
+        </table>
     </div>
-    <ul>
-        <li><a href="javascript:ts1();" id="prev">上一页</a></li>
-        {% for page in pages %}
-        <li><a href="{% url 'video:index' %}?page={{page}}">{{page}}</a></li>
-        {% endfor %}
-        <li><a href="javascript:ts2();" id="next">下一页</a></li>
-    </ul>
-    <script src="/static/js/jquery.min.js"></script>
-    <script>
-        function ts1() {
-            alert('已经是第一页啦');
-        }
-        function ts2() {
-            alert('已经是最后一页啦');
-        }
-        var parameter=location.search;
-        $.ajax({
-            type:'GET',
-            url:'/video/movies/'+parameter,
-            dataType:'json',
-            headers:{'Authorization':'token '+localStorage.token},
-            success:function (data) {
-                if(data.data.previous){
-                    $('#prev').attr('href',data.data.previous.replace('movies','index'));
-                }
-                if(data.data.next){
-                    $('#next').attr('href',data.data.next.replace('movies','index'));
-                }
-                for(var i=0;i<data.data.results.length;i++){
-                    $('#content').append($('<img>').attr({'src':data.data.results[i].movie_img,'width':196,'height':256}));
-                }
-            }
-        });
-    </script>
+    <br>
+    <a href="{% url 'video:manual' %}">接口文档</a>
 </body>
 </html>

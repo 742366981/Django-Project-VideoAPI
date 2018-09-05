@@ -15,7 +15,10 @@ animation_router.register('animation', views.AnimationSource)
 fuli_router = SimpleRouter()
 fuli_router.register('fuli', views.FuliSource)
 urlpatterns = [
+    url(r'test/', views.test, name='test'),
     url(r'index/', views.index, name='index'),
+    url(r'manual/', views.manual, name='manual'),
+    url(r'logout/', views.logout, name='logout'),
     url(r'register/', views.register, name='register'),
     url(r'login/', views.login, name='login'),
     url(r'^api-token-auth/', obtain_auth_token),

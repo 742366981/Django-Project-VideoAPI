@@ -1,15 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>注册</title>
-</head>
-<body>
-    <form method="post" action="">
-        {% csrf_token %}
-        <p>用户名：<input name="username"></p>
-        <p>密码：<input type="password" name="password"></p>
-        <input type="submit">
-    </form>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+		<title>注册</title>
+		<link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+		<script src="/static/js/jquery.min.js"></script>
+		<script src="/static/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row clearfix">
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+					<h3>
+						注册
+					</h3>
+				</div>
+			</div>
+			<div class="row clearfix">
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+				</div>
+				<div class="col-md-4 column">
+					<form role="form" method="post" action="">
+                        {% csrf_token %}
+						<div class="form-group">
+							 <label for="exampleInputUser">用户名</label>
+                            <input type="type" name="username" class="form-control" id="exampleInputUser"
+								   placeholder="请输入用户名" />
+						</div>
+						<div class="form-group">
+							 <label for="exampleInputPassword">密码</label>
+                            <input type="password" name="password" class="form-control" id="exampleInputPassword"
+							placeholder="请输入一个不少于8位的密码"/>
+						</div>
+						<div class="form-group">
+							 <label for="exampleInputPassword2">确认密码</label>
+                            <input type="password" name="password2" class="form-control" id="exampleInputPassword2"
+							placeholder="请输入上面的密码"/>
+						</div>
+						<div class="form-group">
+							 <label for="exampleInputEmail1">邮箱</label>
+                            <input type="email" name="email" class="form-control" id="exampleInputEmail1"
+								   placeholder="请输入邮箱"/>
+						</div>
+						<div class="form-group">
+							<p class="help-block" style="color: red;">
+								{{hint}}
+							</p>
+						</div>
+						<button type="submit" class="btn btn-default">注册</button>
+						<a href="{% url 'video:login' %}">已有账号,点击登录</a>
+					</form>
+				</div>
+			</div>
+		</div>
 </body>
 </html>

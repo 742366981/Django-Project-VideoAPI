@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+    <div id="content">
+    </div>
+    <ul>
+        <li><a href="javascript:ts1();" id="prev">上一页</a></li>
+        {% for page in pages %}
+        <li><a href="{% url 'video:index' %}?page={{page}}">{{page}}</a></li>
+        {% endfor %}
+        <li><a href="javascript:ts2();" id="next">下一页</a></li>
+    </ul>
+    <script src="/static/js/jquery.min.js"></script>
+    <script>
+        function ts1() {
+            alert('已经是第一页啦');
+        }
+        function ts2() {
+            alert('已经是最后一页啦');
+        }
+        var parameter=location.search;
+        $.ajax({
+            type:'GET',
+            url:'/video/movies/'+parameter,
+            dataType:'json',
+            headers:{'Authorization':'token '+'33422e25e1b104bd464dbb42c29f7dd26e6eb6a2'},
+            success:function (data) {
+                if(data.data.previous){
+                    $('#prev').attr('href',data.data.previous.replace('movies','index'));
+                }
+                if(data.data.next){
+                    $('#next').attr('href',data.data.next.replace('movies','index'));
+                }
+                for(var i=0;i<data.data.results.length;i++){
+                    $('#content').append($('<img>').attr({'src':data.data.results[i].movie_img,'width':196,'height':256}));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

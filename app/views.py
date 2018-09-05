@@ -1,11 +1,14 @@
 from random import randrange, choice, shuffle
 
 from django.contrib import auth
+from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from rest_framework import mixins, viewsets, filters
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -21,9 +24,33 @@ def register(request):
         return render(request, 'register.html')
     if request.method == 'POST':
         username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
-        User.objects.create_user(username=username, password=password)
+        password2 = request.POST.get('password2')
+        if not all([username, email, password, password2]):
+            return render(request, 'register.html', {'hint': '填写信息不完整,请重新填写'})
+        if User.objects.filter(username=username).exists():
+            return render(request, 'register.html', {'hint': '用户名已存在,请重新填写'})
+        if password != password2:
+            return render(request, 'register.html', {'hint': '两次密码不一样,请重新填写'})
+        if len(password) < 8:
+            return render(request, 'register.html', {'hint': '密码至少8位'})
+        if User.objects.filter(email=email).exists():
+            return render(request, 'register.html', {'hint': '邮箱已被使用,请重新填写'})
+        User.objects.create_user(username=username, password=password, email=email)
         return HttpResponseRedirect(reverse('video:login'))
+
+
+class CustomBackend(ModelBackend):
+    """邮箱也能登录"""
+
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            user = User.objects.get(Q(username=username) | Q(email=username))
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None
 
 
 def login(request):
@@ -36,17 +63,43 @@ def login(request):
         if user:
             auth.login(request, user)
             return HttpResponseRedirect(reverse('video:index'))
+        else:
+            if not all([username, password]):
+                return render(request, 'login.html', {'hint': '请填写完整的信息'})
+            else:
+                return render(request, 'login.html', {'hint': '用户名或密码错误'})
+
+
+def logout(request):
+    if request.method == 'GET':
+        auth.logout(request)
+        return HttpResponseRedirect(reverse('video:login'))
 
 
 def index(request):
     if request.method == 'GET':
+        user = request.user
+        if user.id:
+            user_token = Token.objects.filter(user=user).first()
+            token = user_token.key
+            return render(request, 'index.html', {'token': token})
+        return render(request, 'index.html')
+
+
+def manual(request):
+    if request.method == 'GET':
+        return render(request, 'manual.html')
+
+
+def test(request):
+    if request.method == 'GET':
         movies = Movie.objects.all()
         pages = []
         n = 1
-        for _ in movies[::10]:
+        for _ in movies[::30]:
             pages.append(n)
             n += 1
-        return render(request, 'index.html', {'pages': pages})
+        return render(request, 'test.html', {'pages': pages})
 
 
 class MySourcePageNumberPagination(PageNumberPagination):
@@ -76,6 +129,7 @@ class MyListModelMixin(mixins.ListModelMixin):
     """
     List a queryset.
     """
+
     def list(self, request, *args, **kwargs):
         # 自定义随机获取参数rand
         rand = request.GET.get('rand')
@@ -83,7 +137,7 @@ class MyListModelMixin(mixins.ListModelMixin):
             # 先过滤(列表不支持框架自带过滤)
             queryset = self.filter_queryset(self.get_queryset())
             # 然后随机获取
-            queryset=list(queryset)
+            queryset = list(queryset)
             shuffle(queryset)
 
         else:
@@ -104,8 +158,8 @@ class MovieSource(MyListModelMixin,
     pagination_class = MySourcePageNumberPagination
     # 使用搜索功能后，过滤失效，可以注释掉相关代码
     # filter_class = MovieFilter
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('movie_name', 'movie_type')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['movie_name', 'movie_type', 'release_time']
 
 
 class TvSource(MyListModelMixin,
@@ -113,8 +167,8 @@ class TvSource(MyListModelMixin,
     queryset = Tv.objects.all()
     serializer_class = TvSerializer
     pagination_class = MySourcePageNumberPagination
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('tv_name', 'tv_type')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['tv_name', 'tv_type', 'release_time']
 
 
 class ShowsSource(MyListModelMixin,
@@ -122,8 +176,8 @@ class ShowsSource(MyListModelMixin,
     queryset = Shows.objects.all()
     serializer_class = ShowsSerializer
     pagination_class = MySourcePageNumberPagination
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('show_name', 'show_type')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['show_name', 'show_type', 'release_time']
 
 
 class AnimationSource(MyListModelMixin,
@@ -131,8 +185,8 @@ class AnimationSource(MyListModelMixin,
     queryset = Animation.objects.all()
     serializer_class = AnimationSerializer
     pagination_class = MySourcePageNumberPagination
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('animation_name', 'animation_type')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['animation_name', 'animation_type', 'release_time']
 
 
 class FuliSource(MyListModelMixin,
@@ -140,8 +194,8 @@ class FuliSource(MyListModelMixin,
     queryset = Fuli.objects.all()
     serializer_class = FuliSerializer
     pagination_class = MySourcePageNumberPagination
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('fuli_name', 'fuli_type')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['fuli_name', 'fuli_type', 'release_time']
 
 
 class TvListView(GenericAPIView):
