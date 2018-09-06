@@ -30,6 +30,9 @@ class Movie(models.Model):
         verbose_name = '电影'
         verbose_name_plural = '电影'
 
+    def __str__(self):
+        return self.movie_name
+
 
 # 电视剧
 class Tv(models.Model):
@@ -116,6 +119,9 @@ class Fuli(models.Model):
         verbose_name = '福利'
         verbose_name_plural = '福利'
 
+    def __str__(self):
+        return self.fuli_name
+
 
 # 电视剧集数
 class TvList(models.Model):
@@ -127,6 +133,9 @@ class TvList(models.Model):
         db_table = 'tv_list'
         verbose_name = '电视剧集数'
         verbose_name_plural = '电视剧集数'
+
+    def __str__(self):
+        return self.tv_name.tv_name+' '+self.num
 
 
 # 综艺期数
@@ -140,6 +149,9 @@ class ShowList(models.Model):
         verbose_name = '综艺期数'
         verbose_name_plural = '综艺期数'
 
+    def __str__(self):
+        return self.show_name.show_name+' '+self.num
+
 
 # 动漫集数
 class AnimationList(models.Model):
@@ -151,3 +163,6 @@ class AnimationList(models.Model):
         db_table = 'animation_list'
         verbose_name = '动漫集数'
         verbose_name_plural = '动漫集数'
+
+    def __str__(self):
+        return self.animation_name.animation_name+' '+self.num
